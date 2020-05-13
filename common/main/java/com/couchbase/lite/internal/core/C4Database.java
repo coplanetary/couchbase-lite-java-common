@@ -20,6 +20,7 @@ package com.couchbase.lite.internal.core;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ import com.couchbase.lite.internal.fleece.FLValue;
 public class C4Database extends C4NativePeer {
     /* NOTE: Enum values must match the ones in DataFile::MaintenanceType */
     private static final Map<MaintenanceType, Integer> MAINTENANCE_TYPE_MAP;
+
     static {
         final Map<MaintenanceType, Integer> m = new HashMap<>();
         m.put(MaintenanceType.REINDEX, 0);
@@ -81,9 +83,12 @@ public class C4Database extends C4NativePeer {
         this(open(path, flags, storageEngine, versioning, algorithm, encryptionKey), false);
     }
 
-    public C4Database(long handle, boolean shouldRetain) {
+    public C4Database(long handle) { this(handle, true); }
+
+    private C4Database(long handle, boolean shouldRetain) {
         super(handle);
         this.shouldRetain = shouldRetain;
+        Log.d("###", "Creating C4 DB (" + shouldRetain + "): " + this);
     }
 
     //-------------------------------------------------------------------------
@@ -92,7 +97,9 @@ public class C4Database extends C4NativePeer {
 
     // - Lifecycle
 
+    // called from finalizer
     public void free() {
+        Log.d("###", "Freeing C4 DB (" + shouldRetain + "): " + this);
         if (shouldRetain) { return; }
 
         final long handle = getPeerAndClear();
@@ -405,13 +412,7 @@ public class C4Database extends C4NativePeer {
     @SuppressWarnings("NoFinalizer")
     @Override
     protected void finalize() throws Throwable {
-        if (shouldRetain) { return; }
-
-        final long handle = getPeerAndClear();
-        if (handle == 0L) { return; }
-
-        free(handle);
-
+        free();
         super.finalize();
     }
 

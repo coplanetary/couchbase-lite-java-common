@@ -28,6 +28,8 @@ import com.couchbase.lite.internal.support.Log;
  * Expire documents at a regular interval, once started.
  */
 class DocumentExpirationStrategy {
+    private final Object lock = new Object();
+
     private final AbstractDatabase db;
     private final Executor expirationExecutor;
     private final long expirationInterval;
@@ -52,7 +54,7 @@ class DocumentExpirationStrategy {
         }
 
         final long delayMs = Math.max(nextExpiration - System.currentTimeMillis(), minDelayMs);
-        synchronized (this) {
+        synchronized (lock) {
             if (expirationCancelled || (expirationTask != null)) { return; }
             expirationTask = CouchbaseLiteInternal.getExecutionService()
                 .postDelayedOnExecutor(delayMs, expirationExecutor, this::purgeExpiredDocuments);
@@ -63,7 +65,7 @@ class DocumentExpirationStrategy {
 
     void cancelPurges() {
         final Cancellable task;
-        synchronized (this) {
+        synchronized (lock) {
             expirationCancelled = true;
             task = expirationTask;
         }
@@ -77,7 +79,7 @@ class DocumentExpirationStrategy {
     // between ending transaction and handling change notification when the documents
     // are purged
     private void purgeExpiredDocuments() {
-        synchronized (this) {
+        synchronized (lock) {
             if (expirationCancelled) { return; }
             expirationTask = null;
         }

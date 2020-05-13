@@ -130,7 +130,7 @@ abstract class AbstractQuery implements Query {
             if (parameters == null) { parameters = new Parameters(); }
             params = parameters.encode();
             final C4QueryEnumerator c4enum;
-            synchronized (getDatabase().getLock()) {
+            synchronized (getDbLock()) {
                 synchronized (lock) {
                     if (c4query == null) { c4query = prepQueryLocked(); }
                     c4enum = c4query.run(options, params);
@@ -163,7 +163,7 @@ abstract class AbstractQuery implements Query {
     @NonNull
     @Override
     public String explain() throws CouchbaseLiteException {
-        synchronized (getDatabase().getLock()) {
+        synchronized (getDbLock()) {
             synchronized (lock) {
                 if (c4query == null) { c4query = prepQueryLocked(); }
                 return c4query.explain();
@@ -227,7 +227,7 @@ abstract class AbstractQuery implements Query {
         final C4Query query = c4query;
         if (query == null) { return; }
 
-        final Object lock = getDbLock();
+        final Object lock = getDbLockUnchecked();
         if (lock != null) {
             synchronized (lock) { query.free(); }
         }
@@ -373,8 +373,14 @@ abstract class AbstractQuery implements Query {
         }
     }
 
-    // called from finalizer
     private Object getDbLock() {
+        final Database db = getDatabase();
+        if (db != null) { return db.getLock(); }
+        throw new IllegalStateException("Cannot seize DB lock");
+    }
+
+    // called only from finalizer
+    private Object getDbLockUnchecked() {
         final Database db = database;
         if (db != null) { return db.getLock(); }
 
