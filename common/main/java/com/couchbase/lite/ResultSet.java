@@ -171,7 +171,7 @@ public class ResultSet implements Iterable<Result> {
         final AbstractQuery q = query;
         if (q != null) {
             final Database db = q.getDatabase();
-            if (db != null) { return db.getLock(); }
+            if (db != null) { return db.getSharedLock(); }
         }
         throw new IllegalStateException("Could not obtain db lock");
     }

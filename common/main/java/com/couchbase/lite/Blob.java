@@ -31,6 +31,7 @@ import java.util.Map;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+import com.couchbase.lite.internal.SimpleDatabase;
 import com.couchbase.lite.internal.core.C4BlobKey;
 import com.couchbase.lite.internal.core.C4BlobReadStream;
 import com.couchbase.lite.internal.core.C4BlobStore;
@@ -229,7 +230,7 @@ public final class Blob implements FLEncodable {
      * Null if blob is new and unsaved
      */
     @Nullable
-    private Database database;
+    private SimpleDatabase database;
 
     /**
      * The cryptographic digest of this CBLBlob's contents, which uniquely identifies it.
@@ -305,7 +306,7 @@ public final class Blob implements FLEncodable {
     }
 
     // Initializer for an existing blob being read from a document
-    Blob(@NonNull Database database, @NonNull Map<String, Object> properties) {
+    Blob(@NonNull SimpleDatabase database, @NonNull Map<String, Object> properties) {
         this.database = database;
 
         this.properties = new HashMap<>(properties);
@@ -535,7 +536,7 @@ public final class Blob implements FLEncodable {
     }
 
     @NonNull
-    private InputStream getStreamFromDatabase(@NonNull Database db) {
+    private InputStream getStreamFromDatabase(@NonNull SimpleDatabase db) {
         C4BlobKey key = null;
         try {
             key = new C4BlobKey(blobDigest);

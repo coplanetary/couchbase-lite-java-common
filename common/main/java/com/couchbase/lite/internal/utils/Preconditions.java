@@ -41,8 +41,9 @@ public final class Preconditions {
         return n;
     }
 
-    public static void assertNotEmpty(String str, @NonNull String name) {
+    public static String assertNotEmpty(String str, @NonNull String name) {
         if (StringUtils.isEmpty(str)) { throw new IllegalArgumentException(name + " must not be empty"); }
+        return str;
     }
 
     public static <T> void assertThat(T obj, @NonNull String msg, @NonNull Fn.Predicate<T> predicate) {

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.couchbase.lite.internal.DbContext;
+import com.couchbase.lite.internal.SimpleDatabase;
 import com.couchbase.lite.internal.fleece.FLEncodable;
 import com.couchbase.lite.internal.fleece.FLEncoder;
 import com.couchbase.lite.internal.fleece.MCollection;
@@ -287,7 +288,7 @@ public class Dictionary implements DictionaryInterface, FLEncodable, Iterable<St
     public Map<String, Object> toMap() {
         final Map<String, Object> result = new HashMap<>();
         synchronized (lock) {
-            for (String key : internalDict) {
+            for (String key: internalDict) {
                 result.put(key, Fleece.toObject(internalDict.get(key).asNative(internalDict)));
             }
         }
@@ -344,7 +345,7 @@ public class Dictionary implements DictionaryInterface, FLEncodable, Iterable<St
         final Dictionary m = (Dictionary) o;
 
         if (m.count() != count()) { return false; }
-        for (String key : this) {
+        for (String key: this) {
             final Object value = getValue(key);
             if (value != null) {
                 if (!value.equals(m.getValue(key))) { return false; }
@@ -363,7 +364,7 @@ public class Dictionary implements DictionaryInterface, FLEncodable, Iterable<St
     @Override
     public int hashCode() {
         int h = 0;
-        for (String key : this) { h += hashCode(key, getValue(key)); }
+        for (String key: this) { h += hashCode(key, getValue(key)); }
         return h;
     }
 
@@ -376,7 +377,7 @@ public class Dictionary implements DictionaryInterface, FLEncodable, Iterable<St
             .append((internalDict.isMutated()) ? '!' : '.')
             .append('{');
         boolean first = true;
-        for (String key : getKeys()) {
+        for (String key: getKeys()) {
             if (first) { first = false; }
             else { buf.append(','); }
             buf.append(key).append("=>").append(getValue(key));
@@ -404,7 +405,7 @@ public class Dictionary implements DictionaryInterface, FLEncodable, Iterable<St
     private Object getDbLock() {
         final MContext context = internalDict.getContext();
         if (context instanceof DbContext) {
-            final Database db = ((DbContext) context).getDatabase();
+            final SimpleDatabase db = ((DbContext) context).getDatabase();
             if (db != null) { return db.getLock(); }
         }
         return new Object();

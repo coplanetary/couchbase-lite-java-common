@@ -19,16 +19,15 @@ package com.couchbase.lite.internal;
 
 import android.support.annotation.Nullable;
 
-import com.couchbase.lite.Database;
 import com.couchbase.lite.internal.fleece.MContext;
 
 
 public class DbContext extends MContext {
     @Nullable
-    private final Database db;
+    private final SimpleDatabase db;
 
-    public DbContext(@Nullable Database db) { this.db = db; }
+    public DbContext(@Nullable SimpleDatabase db) { this.db = db; }
 
     @Nullable
-    public Database getDatabase() { return db; }
+    public SimpleDatabase getDatabase() { return db; }
 }

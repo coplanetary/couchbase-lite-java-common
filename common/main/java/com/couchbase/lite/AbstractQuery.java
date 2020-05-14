@@ -375,14 +375,14 @@ abstract class AbstractQuery implements Query {
 
     private Object getDbLock() {
         final Database db = getDatabase();
-        if (db != null) { return db.getLock(); }
+        if (db != null) { return db.getSharedLock(); }
         throw new IllegalStateException("Cannot seize DB lock");
     }
 
     // called only from finalizer
     private Object getDbLockUnchecked() {
         final Database db = database;
-        if (db != null) { return db.getLock(); }
+        if (db != null) { return db.getSharedLock(); }
 
         final DataSource dSrc = from;
         if (dSrc == null) { return null; }
@@ -390,6 +390,6 @@ abstract class AbstractQuery implements Query {
         final Object src = dSrc.getSource();
         if (!(src instanceof Database)) { return null; }
 
-        return ((Database) src).getLock();
+        return ((Database) src).getSharedLock();
     }
 }

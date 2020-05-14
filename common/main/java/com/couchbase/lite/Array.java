@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.couchbase.lite.internal.DbContext;
+import com.couchbase.lite.internal.SimpleDatabase;
 import com.couchbase.lite.internal.fleece.FLEncodable;
 import com.couchbase.lite.internal.fleece.FLEncoder;
 import com.couchbase.lite.internal.fleece.MArray;
@@ -358,7 +359,7 @@ public class Array implements ArrayInterface, FLEncodable, Iterable<Object> {
     private Object getDbLock() {
         final MContext context = internalArray.getContext();
         if (context instanceof DbContext) {
-            final Database db = ((DbContext) context).getDatabase();
+            final SimpleDatabase db = ((DbContext) context).getDatabase();
             if (db != null) { return db.getLock(); }
         }
         return new Object();
