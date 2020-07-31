@@ -112,7 +112,7 @@ case "${OS}" in
       ;;
    centos6|linux)
       curl -Lf "${CORE_URL}.tar.gz" -o "${LIB}.tar.gz"
-      tar xf "litecore-${LIB}.tar.gz"
+      tar xf "${LIB}.tar.gz"
 
       LIBLITECORE_DIR=linux/x86_64
       mkdir -p "${LIBLITECORE_DIR}" && rm -rf "${LIBLITECORE_DIR}/"*

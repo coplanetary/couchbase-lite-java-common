@@ -4,7 +4,7 @@ MBEDTLS_DIR=vendor/mbedtls
 MBEDTLS_LIB=crypto/library/libmbedcrypto.a
 
 cores=`getconf _NPROCESSORS_ONLN`
-JOBS = `expr $cores + 1`
+JOBS=`expr $cores + 1`
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
@@ -106,7 +106,7 @@ mkdir -p $OUTPUT_DIR
 
 case $OS in
    linux)
-      // untested
+      # untested
       if [[ $LIB == LiteCore ]]; then
          cmake -DBUILD_ENTERPRISE=$ENT -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_C_COMPILER_WORKS=1 -DCMAKE_CXX_COMPILER_WORKS=1 ../..
 
@@ -117,7 +117,7 @@ case $OS in
          cp -f $MBEDTLS_DIR/$MBEDTLS_LIB $OUTPUT_DIR
       fi
 
-      // works on centos6
+      # works on centos6
       if [[ $LIB == mbedcrypto ]]; then
          cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_POSITION_INDEPENDENT_CODE=1 ../../$MBEDTLS_DIR
          make -j $JOBS mbedx509 mbedcrypto mbedtls
@@ -126,7 +126,7 @@ case $OS in
       ;;
 
    macos)
-      // untested
+      # untested
       if [[ $LIB == LiteCore ]]; then
          cmake -DBUILD_ENTERPRISE=$ENT -DCMAKE_BUILD_TYPE=$BUILD_TYPE ../..
 
@@ -138,7 +138,7 @@ case $OS in
          cp -f $MBEDTLS_DIR/$MBEDTLS_LIB $OUTPUT_DIR
       fi
 
-      // works
+      # works
       if [[ $LIB == mbedcrypto ]]; then
          cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_POSITION_INDEPENDENT_CODE=1 ../../$MBEDTLS_DIR
          make -j $JOBS mbedx509 mbedcrypto mbedtls
