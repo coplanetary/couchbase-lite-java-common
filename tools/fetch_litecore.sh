@@ -105,7 +105,8 @@ case "${OS}" in
       unzip "${LIB}.zip"
 
       LIBLITECORE_DIR=macos/x86_64
-      mkdir -p "${LIBLITECORE_DIR}" && rm -rf "${LIBLITECORE_DIR}/"*
+      mkdir -p "${LIBLITECORE_DIR}"
+      rm -rf "${LIBLITECORE_DIR}/"*
       mv -f lib/libLiteCore.dylib "${LIBLITECORE_DIR}"
 
       rm -f "${LIB}.zip"
@@ -115,13 +116,17 @@ case "${OS}" in
       tar xf "${LIB}.tar.gz"
 
       LIBLITECORE_DIR=linux/x86_64
-      mkdir -p "${LIBLITECORE_DIR}" && rm -rf "${LIBLITECORE_DIR}/"*
+      mkdir -p "${LIBLITECORE_DIR}"
+      rm -rf "${LIBLITECORE_DIR}/"*
       mv -f lib/libLiteCore.so "${LIBLITECORE_DIR}"
 
-      LIBICU_DIR=support/linux/x86_64/libicu
-      mkdir -p "${LIBICU_DIR}" && rm -rf "${LIBICU_DIR}/"*
-      mv -f lib/libicu*.* "${LIBICU_DIR}"
-      rm -f "${LIBICU_DIR}/"libicutest*.*
+      SUPPORT_DIR=support/linux/x86_64
+      mkdir -p "${SUPPORT_DIR}" && rm -rf "${SUPPORT_DIR}/"*
+      mv -f lib/libgcc*.* "${SUPPORT_DIR}"
+      mv -f lib/libicu*.* "${SUPPORT_DIR}"
+      mv -f lib/libstdc*.* "${SUPPORT_DIR}"
+      mv -f lib/libz*.* "${SUPPORT_DIR}"
+      rm -f "${SUPPORT_DIR}/"libicutest*.*
 
       rm -f "${LIB}.tar.gz"
       ;;
